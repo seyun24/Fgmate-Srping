@@ -9,7 +9,7 @@
         </encoder>
     </appender>
 
-    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>./logs/debug.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>./logs/debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
@@ -42,9 +42,9 @@
         </encoder>
     </appender>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="DEBUG_FILE"/>
+        <appender-ref ref="INFO_FILE"/>
     </root>
 
     <logger name="org.siksnaghae.fgmate" level="DEBUG">

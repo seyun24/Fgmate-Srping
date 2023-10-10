@@ -7,20 +7,20 @@ import org.siksnaghae.fgmate.util.ApiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
-    public void getKakaoProfile(String token) {
+    public String getKakaoProfile(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
-        String response;
-        String email;
+        String response, email;
         Long id;
 
         try {
-            response = ApiUtil.post(Constant.KAKAO_REQ_URL, "", headers, String.class);
+            response = ApiUtil.reqAPI(Constant.KAKAO_REQ_URL, "", headers, String.class, HttpMethod.POST);
 
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(response);
@@ -31,8 +31,24 @@ public class AuthService {
             if (hasEmail) {
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
             }
+            return response;
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+        return "";
+    }
+
+    public String getNaverProfile(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        String response = "";
+
+        try {
+            response = ApiUtil.reqAPI(Constant.NAVER_REQ_URL, "", headers, String.class, HttpMethod.GET);
+            return response;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return response;
     }
 }

@@ -15,8 +15,8 @@ public class ApiUtil {
             .setReadTimeout(Duration.ofSeconds(30))
             .build();
 
-    public static <T> T post(String url, String requestBody, HttpHeaders headers, Class <T> type) {
-        ResponseEntity<T> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestBody, headers), type);
+    public static <T> T reqAPI(String url, String requestBody, HttpHeaders headers, Class <T> type, HttpMethod httpMethod) {
+        ResponseEntity<T> response = restTemplate.exchange(url,httpMethod, new HttpEntity<>(requestBody, headers), type);
 
         return response.getBody();
     }
