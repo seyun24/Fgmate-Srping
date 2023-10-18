@@ -6,7 +6,6 @@ import org.siksnaghae.fgmate.api.auth.model.AuthDto;
 import org.siksnaghae.fgmate.api.auth.model.AuthReqDto;
 import org.siksnaghae.fgmate.api.auth.model.TokenDto;
 import org.siksnaghae.fgmate.api.auth.service.AuthService;
-import org.siksnaghae.fgmate.api.product.model.Product;
 import org.siksnaghae.fgmate.api.product.service.ProductService;
 import org.siksnaghae.fgmate.api.user.model.user.User;
 import org.siksnaghae.fgmate.api.user.servcie.UserService;
@@ -29,7 +28,7 @@ public class UserController {
     private final UserService userService;
     private final AuthService authService;
 
-    private final ProductService productService
+    private final ProductService productService;
 
 //    @GetMapping("/test")
 //    public String getTest(@RequestParam String token) {
@@ -70,7 +69,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/upload", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ApiResponse<String> testProduct(
+    public ApiResponse<String> putByUser(
             @RequestPart(value = "name") String name,
             @RequestPart(value = "file") MultipartFile file)
     {
