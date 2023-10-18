@@ -6,12 +6,16 @@ import org.siksnaghae.fgmate.api.auth.model.AuthDto;
 import org.siksnaghae.fgmate.api.auth.model.AuthReqDto;
 import org.siksnaghae.fgmate.api.auth.model.TokenDto;
 import org.siksnaghae.fgmate.api.auth.service.AuthService;
+import org.siksnaghae.fgmate.api.product.model.Product;
+import org.siksnaghae.fgmate.api.product.service.ProductService;
 import org.siksnaghae.fgmate.api.user.model.user.User;
 import org.siksnaghae.fgmate.api.user.servcie.UserService;
 import org.siksnaghae.fgmate.common.response.ApiResponse;
 import org.siksnaghae.fgmate.common.response.BaseException;
 import org.siksnaghae.fgmate.util.JwtUtil;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,6 +28,8 @@ public class UserController {
 
     private final UserService userService;
     private final AuthService authService;
+
+    private final ProductService productService
 
 //    @GetMapping("/test")
 //    public String getTest(@RequestParam String token) {
@@ -38,13 +44,13 @@ public class UserController {
     @PostMapping("/login")
     public ApiResponse<AuthDto> logIn(@RequestBody TokenDto tokenDto)  {
         try {
-            AuthReqDto kakaoReq;
+            AuthReqDto autReqDto;
             if (tokenDto.getAuthFg().equals("NAVER")){
-                kakaoReq =  authService.getNaverProfile(tokenDto.getToken());
+                autReqDto =  authService.getNaverProfile(tokenDto.getToken());
             } else{
-                kakaoReq =  authService.getKakaoProfile(tokenDto.getToken());
+                autReqDto =  authService.getKakaoProfile(tokenDto.getToken());
             }
-            AuthDto userInfo = userService.kakaoLogIn(kakaoReq);
+            AuthDto userInfo = userService.socialLogIn(autReqDto);
 
             return new ApiResponse<>(userInfo);
         } catch (BaseException exception) {
@@ -58,6 +64,24 @@ public class UserController {
             Long userId = JwtUtil.getUserId();
             userService.saveProfile(name, userId);
             return new ApiResponse<>("닉네임 설정 완료");
+        } catch (BaseException exception) {
+            return new ApiResponse<>((exception.getStatus()));
+        }
+    }
+
+    @PostMapping(value = "/upload", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<String> testProduct(
+            @RequestPart(value = "name") String name,
+            @RequestPart(value = "file") MultipartFile file)
+    {
+        try {
+            Long userId = JwtUtil.getUserId();
+            String fileUrl = "";
+            if (!file.isEmpty()) {
+                fileUrl = productService.saveImg(file);
+            }
+            userService.saveProfile(name, userId, fileUrl);
+            return new ApiResponse<>(fileUrl);
         } catch (BaseException exception) {
             return new ApiResponse<>((exception.getStatus()));
         }
@@ -88,6 +112,17 @@ public class UserController {
         try {
             List<User> list = userService.findTest();
             return new ApiResponse<>(list);
+        } catch (BaseException exception) {
+            return new ApiResponse<>((exception.getStatus()));
+        }
+    }
+
+    @DeleteMapping
+    public ApiResponse<String> deleteByUser() {
+        try {
+            Long userId = JwtUtil.getUserId();
+            userService.deleteByUser(userId);
+            return new ApiResponse<>(userId+" : 유저 삭제");
         } catch (BaseException exception) {
             return new ApiResponse<>((exception.getStatus()));
         }

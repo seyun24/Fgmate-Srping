@@ -30,6 +30,9 @@ public class User extends BaseEntity {
     @Column(name = "profileImg")
     private String profileImg;
 
+    @Column(name = "deviceToken")
+    private String deviceToken;
+
     protected User() {
 
     }
@@ -37,4 +40,6 @@ public class User extends BaseEntity {
     public void setName(String name){
         this.name=name;
     }
+
+    public void setProfileImg(String file) {this.profileImg=profileImg;}
 }

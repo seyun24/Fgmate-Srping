@@ -35,7 +35,7 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public AuthDto kakaoLogIn(AuthReqDto kakaoDto) throws BaseException {
+    public AuthDto socialLogIn(AuthReqDto kakaoDto) throws BaseException {
         String id =kakaoDto.getId();
         String email =kakaoDto.getEmail();
         try{
@@ -57,7 +57,7 @@ public class UserService {
               return AuthDto.builder()
                       .userId(userId)
                       .jwt(jwt)
-                      .loginInfo("1")
+                      .loginInfo("0")
                       .build();
           }
         }catch (Exception e){
@@ -70,6 +70,19 @@ public class UserService {
         try {
             User user = userRepository.findById(userId).orElse(null);
             user.setName(name);
+            userRepository.save(user);
+
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional(rollbackFor = {SQLException.class, Exception.class})
+    public void saveProfile(String name, Long userId, String file) throws BaseException {
+        try {
+            User user = userRepository.findById(userId).orElse(null);
+            user.setName(name);
+            user.setProfileImg(file);
             userRepository.save(user);
 
         } catch (Exception exception) {
@@ -96,6 +109,14 @@ public class UserService {
     public List<User> findTest() throws BaseException {
         try {
             return userRepository.findAll();
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteByUser(Long userId) throws BaseException {
+        try {
+            userRepository.deleteById(userId);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -150,5 +171,7 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+
 
 }
