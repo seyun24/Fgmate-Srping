@@ -8,8 +8,8 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    boolean existsByInfoId(Long id);
-    User findByInfoId(Long id);
+    boolean existsByInfoId(String id);
+    User findByInfoId(String id);
 
     List<User> findByNameStartingWith(String name);
 }

@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class KakaoDto {
+public class AuthDto {
     private Long userId;
     private String jwt;
-    private int loginInfo;
+    private String loginInfo;
 }

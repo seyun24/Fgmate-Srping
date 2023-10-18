@@ -2,8 +2,8 @@ package org.siksnaghae.fgmate.api.user.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.siksnaghae.fgmate.api.auth.model.KakaoDto;
-import org.siksnaghae.fgmate.api.auth.model.KakaoReqDto;
+import org.siksnaghae.fgmate.api.auth.model.AuthDto;
+import org.siksnaghae.fgmate.api.auth.model.AuthReqDto;
 import org.siksnaghae.fgmate.api.auth.model.TokenDto;
 import org.siksnaghae.fgmate.api.auth.service.AuthService;
 import org.siksnaghae.fgmate.api.user.model.user.User;
@@ -25,22 +25,26 @@ public class UserController {
     private final UserService userService;
     private final AuthService authService;
 
-    @GetMapping("/test")
-    public String getTest(@RequestParam String token) {
-        return authService.getKakaoProfile(token);
-    }
+//    @GetMapping("/test")
+//    public String getTest(@RequestParam String token) {
+//        return authService.getKakaoProfile(token);
+//    }
 
 //    @GetMapping("/test")
 //    public String getTest2(){
 //        return "TEST";
 //    }
 
-    @PostMapping("/kakao-login")
-    public ApiResponse<KakaoDto> logInKakao(@RequestBody TokenDto tokenDto)  {
+    @PostMapping("/login")
+    public ApiResponse<AuthDto> logIn(@RequestBody TokenDto tokenDto)  {
         try {
-
-            KakaoReqDto kakaoReq = userService.callbackKakao(tokenDto.getToken());
-            KakaoDto userInfo = userService.kakaoLogIn(kakaoReq);
+            AuthReqDto kakaoReq;
+            if (tokenDto.getAuthFg().equals("NAVER")){
+                kakaoReq =  authService.getNaverProfile(tokenDto.getToken());
+            } else{
+                kakaoReq =  authService.getKakaoProfile(tokenDto.getToken());
+            }
+            AuthDto userInfo = userService.kakaoLogIn(kakaoReq);
 
             return new ApiResponse<>(userInfo);
         } catch (BaseException exception) {

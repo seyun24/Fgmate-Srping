@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class KakaoReqDto {
-    private long id;
+public class AuthReqDto {
+    private String id;
     private String email;
 }

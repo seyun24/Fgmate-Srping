@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "Users")
+@Table(name = "Users_m")
 @AllArgsConstructor
 @Builder
 public class User extends BaseEntity {
@@ -24,7 +24,7 @@ public class User extends BaseEntity {
 
     private String name;
     @Column(name = "infoId")
-    private Long infoId;
+    private String infoId;
     private String email;
 
     @Column(name = "profileImg")

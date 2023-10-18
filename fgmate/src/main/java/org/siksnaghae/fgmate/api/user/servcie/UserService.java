@@ -4,8 +4,8 @@ package org.siksnaghae.fgmate.api.user.servcie;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
-import org.siksnaghae.fgmate.api.auth.model.KakaoDto;
-import org.siksnaghae.fgmate.api.auth.model.KakaoReqDto;
+import org.siksnaghae.fgmate.api.auth.model.AuthDto;
+import org.siksnaghae.fgmate.api.auth.model.AuthReqDto;
 import org.siksnaghae.fgmate.api.user.model.user.User;
 import org.siksnaghae.fgmate.api.user.repository.UserRepository;
 import org.siksnaghae.fgmate.common.response.BaseException;
@@ -35,17 +35,17 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public KakaoDto kakaoLogIn(KakaoReqDto kakaoDto) throws BaseException {
-        Long id =kakaoDto.getId();
+    public AuthDto kakaoLogIn(AuthReqDto kakaoDto) throws BaseException {
+        String id =kakaoDto.getId();
         String email =kakaoDto.getEmail();
         try{
           if(userRepository.existsByInfoId(id)){ // 로그인
               Long userId = userRepository.findByInfoId(id).getUserId();
               String jwt = JwtUtil.createJwt(userId);
-              return KakaoDto.builder()
+              return AuthDto.builder()
                       .userId(userId)
                       .jwt(jwt)
-                      .loginInfo(1)
+                      .loginInfo("1")
                       .build();
           } else { //회원가입
               User user = User.builder()
@@ -54,10 +54,10 @@ public class UserService {
                       .build();
               Long userId = userRepository.save(user).getUserId();
               String jwt = JwtUtil.createJwt(userId);
-              return KakaoDto.builder()
+              return AuthDto.builder()
                       .userId(userId)
                       .jwt(jwt)
-                      .loginInfo(1)
+                      .loginInfo("1")
                       .build();
           }
         }catch (Exception e){
@@ -101,10 +101,10 @@ public class UserService {
         }
     }
 
-    public KakaoReqDto callbackKakao(String token) throws BaseException{
+    public AuthReqDto callbackKakao(String token) throws BaseException{
         String reqURL = "https://kapi.kakao.com/v2/user/me";
         String email = "";
-        long id = 0;
+        String id = "";
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -121,7 +121,7 @@ public class UserService {
                 JsonParser parser = new JsonParser();
                 JsonElement element = parser.parse(responseBody);
 
-                id = element.getAsJsonObject().get("id").getAsLong();
+                id = element.getAsJsonObject().get("id").getAsString();
                 boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
 
                 if (hasEmail) {
@@ -130,7 +130,7 @@ public class UserService {
 
                 System.out.println("id: " + id);
                 System.out.println("email: " + email);
-                return KakaoReqDto.builder()
+                return AuthReqDto.builder()
                         .id(id)
                         .email(email)
                         .build();
