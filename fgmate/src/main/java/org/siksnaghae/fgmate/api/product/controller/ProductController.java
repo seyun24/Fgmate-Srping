@@ -48,8 +48,21 @@ public class ProductController {
         }
     }
 
-    @PostMapping(value = "/upload", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/upload2", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<String> testProduct(
+            @RequestPart(value = "product") Product product,
+            @RequestPart(value = "file") MultipartFile file)
+    {
+        try {
+            String fileUrl = productService.saveProduct(product, file);
+            return new ApiResponse<>(fileUrl);
+        } catch (BaseException exception) {
+            return new ApiResponse<>((exception.getStatus()));
+        }
+    }
+
+    @PostMapping(value = "/upload", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<String> saveProduct(
             @RequestPart(value = "product") Product product,
             @RequestPart(value = "file") MultipartFile file)
     {

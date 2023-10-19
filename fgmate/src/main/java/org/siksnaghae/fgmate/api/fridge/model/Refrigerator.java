@@ -24,6 +24,7 @@ public class Refrigerator extends BaseEntity {
 
     private String refrigeratorName;
 
+    private Long ownerId;
 
     protected Refrigerator() {
 

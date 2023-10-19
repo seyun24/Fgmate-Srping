@@ -11,9 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    Optional<List<Product>> findByRefrigeratorId(Long id);
+    List<Product> findByRefrigeratorId(Long id);
     @Query("select new org.siksnaghae.fgmate.api.product.model.ProductDto(P) " +
             "from Product P where P.productId = :id")
-    Optional<ProductDto> findByProductIdDtl(Long id);
-    Optional<Product> findByProductId(Long id);
+    ProductDto findByProductIdDtl(Long id);
+    Product findByProductId(Long id);
 }

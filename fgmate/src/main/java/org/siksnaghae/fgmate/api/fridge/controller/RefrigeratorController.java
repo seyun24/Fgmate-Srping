@@ -39,7 +39,7 @@ public class RefrigeratorController {
     }
 
     @PatchMapping("/{name}/{refriId}")
-    public ApiResponse<String> modifyRefrigerator(@PathVariable String name, @PathVariable long refriId) {
+    public ApiResponse<String> modifyRefrigerator(@PathVariable String name, @PathVariable Long refriId) {
         try {
             refrigeratorService.modifyRefrigerator(name,refriId);
             return new ApiResponse<>("냉장고 수정 완료");

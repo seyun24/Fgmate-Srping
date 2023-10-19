@@ -13,8 +13,13 @@ import java.util.Optional;
 @Repository
 public
 interface RefrigeratorRepository extends JpaRepository<Refrigerator,Long>, RefrigeratorRepositoryCustom{
-    Optional<Refrigerator> findByRefrigeratorId(Long id);
+    Optional<Refrigerator> findByRefrigeratorId(Long fridgeId);
+    void deleteByRefrigeratorId(Long fridgeId);
+
+    Boolean existsByOwnerIdAndRefrigeratorId(Long ownerId, Long fridgeId);
     @Query("select new org.siksnaghae.fgmate.api.fridge.model.RefrigeratorDto(R.refrigeratorName, R.refrigeratorId) " +
             "from Refrigerator R join RefrigeratorGroup G where G.userId =:userId")
     List<RefrigeratorDto> findRefrigeratorByUserId(@Param("userId") Long userId);
+
+
 }

@@ -7,6 +7,7 @@ import org.siksnaghae.fgmate.api.product.model.Product;
 import org.siksnaghae.fgmate.api.product.model.ProductDto;
 import org.siksnaghae.fgmate.api.product.repository.ProductRepository;
 import org.siksnaghae.fgmate.common.response.BaseException;
+import org.siksnaghae.fgmate.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,7 +30,7 @@ public class ProductService {
 
     public List<ProductDto> findAllProducts(Long refrigeratorId) throws BaseException {
         try {
-            List<Product> productList = productRepository.findByRefrigeratorId(refrigeratorId).orElse(null);
+            List<Product> productList = productRepository.findByRefrigeratorId(refrigeratorId);
             return productList.stream()
                     .map(product -> new ProductDto(product))
                     .collect(Collectors.toList());
@@ -41,7 +42,7 @@ public class ProductService {
 
     public ProductDto findProduct(Long productsId) throws BaseException {
         try {
-            return productRepository.findByProductIdDtl(productsId).orElse(null);
+            return productRepository.findByProductIdDtl(productsId);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -50,6 +51,20 @@ public class ProductService {
     public void saveProduct(Product product) throws BaseException {
         try {
             productRepository.save(product);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public String saveProduct(Product product, MultipartFile file) throws BaseException {
+        String fileUrl = "";
+        if (!file.isEmpty()) {
+            fileUrl = ImageUtil.saveImg(file, amazonS3Client, bucketName);
+            product.setProductImg(fileUrl);
+        }
+        try {
+            productRepository.save(product);
+            return fileUrl;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

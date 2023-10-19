@@ -42,4 +42,6 @@ public class User extends BaseEntity {
     }
 
     public void setProfileImg(String file) {this.profileImg=profileImg;}
+
+    public void setDeviceToken(String deviceToken) {this.deviceToken= deviceToken;};
 }
