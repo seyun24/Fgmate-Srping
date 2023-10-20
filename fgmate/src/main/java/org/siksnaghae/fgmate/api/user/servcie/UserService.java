@@ -47,7 +47,7 @@ public class UserService {
         String deviceToken = authReqDto.getDeviceToken();
         try{
             User user = userRepository.findByInfoId(infoId);
-          if(user == null){ // 로그인
+          if(user != null){ // 로그인
               Long userId = user.getUserId();
               String jwt = JwtUtil.createJwt(userId);
 

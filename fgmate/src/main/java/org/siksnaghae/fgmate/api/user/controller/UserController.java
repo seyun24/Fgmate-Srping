@@ -38,8 +38,10 @@ public class UserController {
             AuthReqDto autReqDto;
             if (tokenDto.getAuthFg().equals("NAVER")){
                 autReqDto =  authService.getNaverProfile(tokenDto.getToken());
+                autReqDto.setDeviceToken(tokenDto.getDeviceToken());
             } else{
                 autReqDto =  authService.getKakaoProfile(tokenDto.getToken());
+                autReqDto.setDeviceToken(tokenDto.getDeviceToken());
             }
             AuthDto userInfo = userService.socialLogIn(autReqDto);
 
@@ -147,7 +149,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "해당 그룹에 포함 x 유저조회, 파라미터는 냉장고 아이디")
-    @GetMapping("/group/in")
+    @GetMapping("/group/notIn")
     public ApiResponse<List<User>> findNotInGroupUser(@RequestParam Long fridgeId) {
         try {
             List<Long> userIds= refrigeratorGroupService.findGroupUserIds(fridgeId);
